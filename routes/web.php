@@ -88,6 +88,7 @@ Route::get('delete-enquiry-status/{id}','EnquiryStatusController@deleteStatus');
 
 //Get masterdata
 Route::get('item_data','MasterController@getItemData');
+Route::get('get_items_filter','MasterController@getItemFilter');
 Route::get('add_item','MasterController@getItem');
 Route::post('add_item','MasterController@addItem');
 Route::get('edit-item','MasterController@editItem');
@@ -231,9 +232,15 @@ Route::get('bill_detail_report','TaxController@getBillDetail');
 Route::post('bill_detail_report','TaxController@fetchBillDetail');
 Route::post('download_bill_detail_report','TaxController@downloadBillDetail');
 //Tax Bill report
+Route::get('tax_slab_report','TaxController@getTaxSlab');
+Route::post('tax_slab_report','TaxController@fetchTaxSlab');
+Route::post('download_tax_slab_report','TaxController@downloadTaxSlab');
+
 Route::get('cancel_bill_report','ReportController@getCancelSale');
 Route::post('cancel_bill_report','ReportController@fetchCancelSale');
 Route::post('download_cancel_bill_report','ReportController@downloadCancelSale');
+
+
 //inventory report
 Route::get('inventory_report','ReportController@getInventory');
 Route::post('inventory_report','ReportController@fetchInventory');

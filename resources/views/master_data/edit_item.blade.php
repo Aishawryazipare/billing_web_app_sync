@@ -63,7 +63,6 @@
                         <option value="{{$u->Unit_Id}}" <?php if($u->Unit_Id==$item_data->item_units) echo "selected";?>>{{$u->Unit_name}}</option>
                         @endforeach
                     </select>
-                    </select>
                         </div>
                     </div>
                     <div class="form-group">

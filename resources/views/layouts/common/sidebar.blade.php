@@ -149,6 +149,7 @@
                 <li <?php if(Request::is('cancel_bill_report')) { ?>class="active" <?php } ?>><a href="{{url('cancel_bill_report')}}"><i class="fa fa-circle-o" style="color: #00ffc3;"></i>Delete Bill Report</a></li>
                 <li <?php if(Request::is('bill_tax_report')) { ?>class="active" <?php } ?>><a href="{{url('bill_tax_report')}}"><i class="fa fa-circle-o" style="color: #00ffc3;"></i>Bill Tax Report</a></li>
                 <li <?php if(Request::is('bill_detail_report')) { ?>class="active" <?php } ?>><a href="{{url('bill_detail_report')}}"><i class="fa fa-circle-o" style="color: #00ffc3;"></i>Bill Detail Report</a></li>
+                <li <?php if(Request::is('tax_slab_report')) { ?>class="active" <?php } ?>><a href="{{url('tax_slab_report')}}"><i class="fa fa-circle-o" style="color: #00ffc3;"></i>Tax Slab Report</a></li>
          </ul>
         </li>
         <li <?php if(Request::is('user-list')) { ?>class="active" <?php } ?>>

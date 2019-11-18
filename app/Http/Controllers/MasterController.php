@@ -514,11 +514,13 @@ class MasterController extends Controller
     
     public function getItemData()
     {
-        if(Auth::guard('admin')->check()){
+        if(Auth::guard('admin')->check())
+            {
             $id = $this->admin->rid;
-            $item_data = \App\Item::orderBy('item_name', 'asc')->where(['is_active'=>'0','cid'=>$id])->get();
-        }else if(Auth::guard('web')->check()){
-            $item_data = \App\Item::orderBy('item_name', 'asc')->where('is_active','0')->get();
+            $item_data = \App\Item::orderBy('item_name', 'asc')->where(['cid'=>$id])->get();
+        }
+        else if(Auth::guard('web')->check()){
+            $item_data = \App\Item::orderBy('item_name', 'asc')->get();
         }
         else if(Auth::guard('employee')->check()){
             $cid = $this->employee->cid;
@@ -532,7 +534,7 @@ class MasterController extends Controller
             $client_data = \App\Admin::select('location')->where(['rid'=>$cid])->first();
             if($client_data->location == "single" && $role == 2)
             {   
-                $item_data = \App\Item::orderBy('item_name', 'asc')->where(['is_active'=>'0','cid'=>$cid])->get();
+                $item_data = \App\Item::orderBy('item_name', 'asc')->where(['cid'=>$cid])->get();
             }
             else if($client_data->location == "multiple" && $role == 2)
             {
@@ -546,7 +548,7 @@ class MasterController extends Controller
             }
             else if($client_data->location == "multiple" && $role == 1)
             {
-                $item_data = \App\Item::orderBy('item_name', 'asc')->where(['is_active'=>'0','cid'=>$cid,'lid'=>$lid])->get();
+                $item_data = \App\Item::orderBy('item_name', 'asc')->where(['cid'=>$cid,'lid'=>$lid])->get();
             }
                 
         } 
@@ -555,7 +557,53 @@ class MasterController extends Controller
 //        exit;
         return view('master_data.item_data',['item_data' => $item_data]);
     }
-    
+     public function getItemFilter()
+    {
+         $filter=$_GET["filter"];
+           if(Auth::guard('admin')->check()){
+            $id = $this->admin->rid;
+            $item_data = DB::table('bil_AddItems')
+                        ->select('bil_AddItems.*','bil_category.cat_name','bil_AddIUnits.Unit_Taxvalue')
+                        ->leftjoin('bil_category','bil_category.cat_id','=','bil_AddItems.item_category')
+                        ->leftjoin('bil_AddIUnits','bil_AddIUnits.Unit_id','=','bil_AddItems.item_units')
+                         ->orderBy('item_name', 'asc')
+                         ->where(['bil_AddItems.is_active'=>$filter,'bil_AddItems.cid'=>$id])
+                         ->get();
+        }else if(Auth::guard('web')->check()){
+            $item_data = \App\Item::orderBy('item_name', 'asc')->where('is_active',$filter)->get();
+        }
+        else if(Auth::guard('employee')->check()){
+            $cid = $this->employee->cid;
+            $lid = $this->employee->lid;
+            $emp_id = $this->employee->id;
+            $role = $this->employee->role;
+            $sub_emp_id = $this->employee->sub_emp_id;
+            
+            
+            
+            $client_data = \App\Admin::select('location')->where(['rid'=>$cid])->first();
+            if($client_data->location == "single" && $role == 2)
+            {   
+                $item_data = \App\Item::orderBy('item_name', 'asc')->where(['is_active'=>$filter,'cid'=>$cid])->get();
+            }
+            else if($client_data->location == "multiple" && $role == 2)
+            {
+//                echo "multiple role 2";
+               
+                $item_data = \App\Item::orderBy('item_name', 'asc')
+                        ->where(['is_active'=>$filter,'cid'=>$cid,'lid'=>$lid])
+                        ->orWhere(['emp_id'=>$sub_emp_id])
+                        ->orWhere(['emp_id'=>$emp_id])
+                        ->get();
+            }
+            else if($client_data->location == "multiple" && $role == 1)
+            {
+                $item_data = \App\Item::orderBy('item_name', 'asc')->where(['is_active'=>$filter,'cid'=>$cid,'lid'=>$lid])->get();
+            }
+                
+        } 
+        echo json_encode($item_data);
+     }
     public function getItem() {
         if(Auth::guard('admin')->check()){
             $id = $this->admin->rid;
@@ -639,8 +687,11 @@ class MasterController extends Controller
     public function deleteItem($item_id)
     {
         $status = 1;
-        $query = \App\Item::where('item_id', $item_id)
-                ->update(['is_active' => $status,'sync_flag' => 0]);
+        $query = \App\Item::select('*')->where('item_id', $item_id)->first();
+        if($query->is_active==0)
+        $query->update(['is_active' => 1,'sync_flag' => 0]);
+        else
+        $query->update(['is_active' => 0,'sync_flag' => 0]);    
         return redirect('item_data');
     }
      public function editItem()

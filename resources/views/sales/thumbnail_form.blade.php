@@ -167,7 +167,7 @@ src: url('fake receipt.ttf')
         </div>
         <div class="row">
              <div class="col-md-6">
-             <div class="box box-default" style="max-height:500px;overflow:auto;">
+             <div class="box box-default" style="max-height:600px;overflow:auto;">
 <!--            <div class="box-header with-border">
               <h3 class="box-title">Bill No:1</h3>
             </div>-->
@@ -524,8 +524,10 @@ $(document).ready(function(){
     }
     
 });
+$('.item_qty').blur();
 if(flag==0)
 {
+    
     if(gst=="Yes")
     {
          $(".row1:last").before("<tr class='input_fields_wrap'>\n\
@@ -552,6 +554,8 @@ if(flag==0)
 \n\                 <td style='text-align:center;'><i class='fa fa-fw fa-times remove_field' style='color: red;'></i></td>\n\
             </tr>");
     }
+    $("#h_lost").find(".item_qty").last().focus();
+
      i++;
       var total=$('#bill_totalamt').val();
      total=parseFloat(total)+parseFloat(rate);
